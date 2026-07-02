@@ -1,4 +1,14 @@
 """Ponto de entrada unificado da aplicação Streamlit."""
+import os
+import sys
+from pathlib import Path
+
+# --- CORREÇÃO DE PATH PARA DEPLOY EM PRODUÇÃO ---
+# Garante que a raiz do projeto seja detectada pelo Python no servidor do Render
+root_dir = Path(__file__).resolve().parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
 import streamlit as st
 from datetime import date
 from database.connection import init_db
