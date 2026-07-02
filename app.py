@@ -3,12 +3,15 @@ import os
 import sys
 from pathlib import Path
 
-# --- CORREÇÃO DE PATH PARA DEPLOY EM PRODUÇÃO ---
-# Garante que a raiz do projeto seja detectada pelo Python no servidor do Render
-root_dir = Path(__file__).resolve().parent
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
+# Força o Python a enxergar a pasta src/ onde o Render extrai o seu projeto
+current_dir = Path(__file__).resolve().parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
 
+# Opcional: Garante o diretório de trabalho correto
+os.chdir(str(current_dir))
+
+# Agora sim, fazemos os imports normais
 import streamlit as st
 from datetime import date
 from database.connection import init_db
