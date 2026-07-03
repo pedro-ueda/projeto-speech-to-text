@@ -48,12 +48,20 @@ st.markdown("Módulo unificado para monitoria visual, telemetria analítica e pr
 
 tab_captura, tab_historico = st.tabs(["📸 Nova Captura e Análise", "🗄️ Histórico e Dashboards"])
 
+# --- Dentro do tab_captura no seu app.py ---
 with tab_captura:
     col_left, col_right = st.columns([1, 1])
     
     with col_left:
         captured_image_bytes = render_camera_component()
-        captured_audio_bytes = render_audio_component()
+        
+        # Chamamos o gravador e salvamos o retorno
+        audio_data = render_audio_component()
+        if audio_data is not None:
+            st.session_state["audio_bytes_cache"] = audio_data
+            
+        # Verifica se existe algo salvo no cache da sessão corrente
+        audio_para_processar = st.session_state.get("audio_bytes_cache", None)
         
         st.markdown("### Ações de Execução")
         process_btn = st.button("🚀 Processar e Persistir Pipeline", use_container_width=True, type="primary")
@@ -66,11 +74,16 @@ with tab_captura:
             else:
                 with st.spinner("Orquestrando modelos de visão e transcrição acústica..."):
                     try:
+                        # Passamos o áudio recuperado de forma estável da session state
                         saved_record = controller.process_and_save(
                             image_bytes=captured_image_bytes,
-                            audio_bytes=captured_audio_bytes
+                            audio_bytes=audio_para_processar
                         )
                         st.success(f"Pipeline concluído! Registro #{saved_record.id} persistido com sucesso.")
+                        
+                        # Limpa o cache após processar com sucesso para as próximas capturas
+                        if "audio_bytes_cache" in st.session_state:
+                            del st.session_state["audio_bytes_cache"]
                         
                         st.image(saved_record.image_path, caption="Imagem Armazenada no Servidor", use_container_width=True)
                         st.write(f"💬 **Transcrição Obtida:** {saved_record.transcricao}")
