@@ -17,7 +17,7 @@ from datetime import date
 from database.connection import init_db
 from controllers.analysis_controller import AnalysisController
 from components.camera_module import render_camera_component
-from components.audio_module import render_audio_component
+from components.audio import render_audio_component
 from components.dashboard_module import render_dashboard_component
 from components.history_module import render_history_component
 
