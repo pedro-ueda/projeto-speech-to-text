@@ -7,20 +7,19 @@ def render_audio_component():
     st.subheader("🎙️ Observações via Áudio (Gravar na Hora)")
     st.write("Clique no botão abaixo para usar o microfone do seu computador:")
     
-    # Renderiza o gravador nativo do navegador
     audio_captured = mic_recorder(
         start_prompt="🔴 Iniciar Gravação",
         stop_prompt="⏹️ Parar Gravação",
-        just_once=True,
+        just_once=False,
         use_container_width=True,
         format="wav"
     )
     
-    if audio_captured is not None:
-        # Recupera os bytes brutos do áudio gravado do dicionário retornado
+    # Tratamento seguro do retorno do dicionário nativo da versão 0.0.8
+    if isinstance(audio_captured, dict) and 'bytes' in audio_captured:
         audio_bytes = audio_captured['bytes']
-        st.audio(audio_bytes, format="audio/wav")
-        st.success("✅ Áudio gravado com sucesso e pronto para o pipeline!")
-        return audio_bytes
-        
+        if audio_bytes and len(audio_bytes) > 0:
+            st.audio(audio_bytes, format="audio/wav")
+            return audio_bytes
+
     return None
