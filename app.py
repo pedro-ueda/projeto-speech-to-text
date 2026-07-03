@@ -16,10 +16,10 @@ import streamlit as st
 from datetime import date
 from database.connection import init_db
 from controllers.analysis_controller import AnalysisController
-from components.camera import render_camera_component
-from components.audio import render_audio_component
-from components.dashboard import render_dashboard_component
-from components.history import render_history_component
+from components.camera_module import render_camera_component
+from components.audio_module import render_audio_component
+from components.dashboard_module import render_dashboard_component
+from components.history_module import render_history_component
 
 # Inicializa configurações da página web
 st.set_page_config(page_title="Vision Pipeline Pro", layout="wide", initial_sidebar_state="expanded")
